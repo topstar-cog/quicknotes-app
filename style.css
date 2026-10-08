@@ -1,0 +1,109 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6f7;
+  color: #243238;
+}
+
+header {
+  padding: 2rem 1rem;
+  background: #167d78;
+  color: white;
+  text-align: center;
+}
+
+main {
+  width: min(100% - 2rem, 700px);
+  margin: 2rem auto;
+}
+
+section {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+input,
+select,
+button {
+  padding: 0.7rem;
+  font: inherit;
+}
+
+form input {
+  flex: 1;
+  min-width: 180px;
+}
+
+button {
+  border: 0;
+  border-radius: 6px;
+  background: #167d78;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #105e5a;
+}
+
+#error-message {
+  color: #b42318;
+}
+
+#notes-list {
+  padding: 0;
+  list-style: none;
+}
+
+.note-card {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #d7dfe1;
+  border-left: 5px solid #167d78;
+  border-radius: 8px;
+}
+
+.category-personal {
+  border-left-color: #16877f;
+}
+
+.category-work {
+  border-left-color: #9b3030;
+}
+
+.category-study {
+  border-left-color: #2864a5;
+}
+
+footer {
+  padding: 1rem;
+  color: #526166;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  form input,
+  form select,
+  form button {
+    width: 100%;
+  }
+}
