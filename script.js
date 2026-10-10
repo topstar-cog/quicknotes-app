@@ -5,13 +5,13 @@ const notesList = document.querySelector("#notes-list");
 const errorMessage = document.querySelector("#error-message");
 const noteCount = document.querySelector("#note-count");
 const characterCount = document.querySelector("#character-count");
+const searchInput = document.querySelector("#search-input");
 
-const notes = [];
-noteInput.addEventListener("input", () => {
-  characterCount.textContent =
-    `${noteInput.value.length} / 200 characters`;
-});
+let notes = JSON.parse(localStorage.getItem("quicknotes")) || [];
 
+function saveNotes() {
+  localStorage.setItem("quicknotes", JSON.stringify(notes));
+}
 function updateNoteCount() {
   if (notes.length === 0) {
     noteCount.textContent = "You have no notes yet.";
@@ -25,38 +25,55 @@ function updateNoteCount() {
 function render() {
   notesList.textContent = "";
 
-  notes.forEach((note) => {
-    const noteCard = document.createElement("li");
-    noteCard.classList.add(
-      "note-card",
-      `category-${note.category.toLowerCase()}`
-    );
+  const searchWords = searchInput.value.trim().toLowerCase();
+  const matchingNotes = notes.filter((note) =>
+    note.text.toLowerCase().includes(searchWords)
+  );
 
-    const noteText = document.createElement("p");
-    noteText.textContent = note.text;
+  if (searchWords !== "" && matchingNotes.length === 0) {
+    const message = document.createElement("li");
+    message.textContent = "No notes match your search.";
+    notesList.append(message);
+  } else {
+    matchingNotes.forEach((note) => {
+      const noteCard = document.createElement("li");
+      noteCard.classList.add(
+        "note-card",
+        `category-${note.category.toLowerCase()}`
+      );
 
-    const categoryLabel = document.createElement("small");
-    categoryLabel.textContent = note.category;
+      const noteText = document.createElement("p");
+      noteText.textContent = note.text;
 
-    const dateLabel = document.createElement("small");
-    dateLabel.textContent = note.createdAt;
+      const categoryLabel = document.createElement("small");
+      categoryLabel.textContent = note.category;
 
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.textContent = "Delete";
+      const dateLabel = document.createElement("small");
+      dateLabel.textContent = note.createdAt;
 
-    deleteButton.addEventListener("click", () => {
-      const noteIndex = notes.findIndex((item) => item.id === note.id);
-      notes.splice(noteIndex, 1);
-      render();
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.textContent = "Delete";
+
+      deleteButton.addEventListener("click", () => {
+        const noteIndex = notes.findIndex((item) => item.id === note.id);
+        notes.splice(noteIndex, 1);
+        saveNotes();
+        render();
+      });
+
+      noteCard.append(noteText, categoryLabel, dateLabel, deleteButton);
+      notesList.append(noteCard);
     });
-
-    noteCard.append(noteText, categoryLabel, dateLabel, deleteButton);
-    notesList.append(noteCard);
-  });
+  }
 
   updateNoteCount();
 }
+
+noteInput.addEventListener("input", () => {
+  characterCount.textContent =
+    `${noteInput.value.length} / 200 characters`;
+});
 
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -83,8 +100,13 @@ noteForm.addEventListener("submit", (event) => {
   };
 
   notes.push(note);
+  saveNotes();
   render();
+
   noteInput.value = "";
+  characterCount.textContent = "0 / 200 characters";
 });
+
+searchInput.addEventListener("input", render);
 
 render();
